@@ -1,15 +1,15 @@
 const uri = process.env.MONGO_URI;
 console.log(uri);
 const MongoClient = require("mongodb").MongoClient;
-const DB_NAME = "Store";
+const DB_NAME = "bug-tracker-api";
 const MONGO_OPTIONS = { useUnifiedTopology: true, useNewUrlParser: true };
 module.exports = () => {
-	const count = (collectionName) => {
+	const count = (collectionName, query = {}) => {
 		return new Promise((resolve, reject) => {
 			MongoClient.connect(uri, MONGO_OPTIONS, (err, client) => {
 				const db = client.db(DB_NAME);
 				const collection = db.collection(collectionName);
-				collection.countDocuments({}, (err, docs) => {
+				collection.find(query).count((err, docs) => {
 					resolve(docs);
 					client.close();
 				});

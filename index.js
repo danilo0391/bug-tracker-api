@@ -4,9 +4,11 @@ const bodyParser = require("body-parser");
 const hostname = "0.0.0.0";
 const port = process.env.PORT || 3000;
 
-const authorController = require("./controllers/authors")();
-const booksController = require("./controllers/books")();
 const users = require("./models/users")();
+const usersController = require("./controllers/users")();
+const projectsController = require("./controllers/projects")();
+const issuesController = require("./controllers/issues")();
+const commentsController = require("./controllers/comments")();
 
 const app = (module.exports = express());
 
@@ -46,23 +48,31 @@ app.use(async (req, res, next) => {
 
 app.use(bodyParser.json());
 
-// Get all books
-app.get("/books", booksController.getController);
-// Get all books with authors
-app.get("/books/populated", booksController.populatedController);
-// Add a book
-app.post("/books", booksController.postController);
-// A book
-app.get("/books/:id", booksController.getById);
+// Users functions
+app.get("/users", usersController.getController); // Get all users
+app.get("/users/:email", usersController.getById); // Get an user
+app.post("/users", usersController.postController); // Add a user
 
-// Get all authors
-app.get("/authors", authorController.getController);
-// Get all authors with books
-app.get("/authors/populated", authorController.populatedController);
-// Add a author
-app.post("/authors", authorController.postController);
-// An Author
-app.get("/authors/:id", authorController.getById);
+// Projects fuctions
+app.get("/projects", projectsController.getController); // Get all projects
+app.get("/projects/:slug", projectsController.getById); // Get a project
+app.get("/projects/:slug/issues", projectsController.populatedController); // Get all issues for a project
+app.post("/projects", projectsController.postController); // Add a user
+app.post("/projects/:slug/issues", issuesController.postController); // Add new issues to a project individually
+
+// Issues functions
+app.get("/issues", issuesController.getController); // Get all issues
+app.get("/issues/:slug", issuesController.getIndividualIssue); // Get individual issues
+app.get(
+	"/issues/:issueNumber/comments",
+	issuesController.aggregateWithComments
+); // Get all comments for an issue
+app.post("/issues/:issueNumber/comments", commentsController.postController); // Add a new comment to an Issue
+
+// Comments fuctions
+app.get("/comments", commentsController.getController); // Get all comments
+app.get("/comments/:email", commentsController.getCommentsForAuthor); // Get all comments for an author
+//app.get("/issues/:slug/comments/id", issuesController.)
 
 app.listen(port, hostname, () => {
 	console.log(`Server running at http://${hostname}:${port}/`);
