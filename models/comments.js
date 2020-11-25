@@ -5,12 +5,21 @@ module.exports = () => {
 	const get = async (email = null) => {
 		console.log("  insede comments model");
 		if (!email) {
-			const comments = await db.get(COLLECTION);
-			return comments;
+			try {
+				const comments = await db.get(COLLECTION);
+				return { commentsList: comments };
+			} catch (ex) {
+				console.log(" -------------------COMMENTS GET ERROR");
+				return { error: ex };
+			}
 		}
-
-		const oneComment = await db.get(COLLECTION, { author: email });
-		return oneComment;
+		try {
+			const oneComment = await db.get(COLLECTION, { author: email });
+			return { commentsList: oneComment };
+		} catch (ex) {
+			console.log(" -------------------COMMENTS GET ERROR");
+			return { error: ex };
+		}
 	};
 
 	const add = async (issueNumber, text, author) => {
@@ -21,15 +30,18 @@ module.exports = () => {
 		const issue_id = issues_array[0]._id;
 		console.log(issue_id);
 		const count = await db.count(COLLECTION);
-
-		const result = await db.add(COLLECTION, {
-			id: count + 1,
-			text: text,
-			author: author,
-			issue_id: issue_id,
-		});
-
-		return result.result;
+		try {
+			const result = await db.add(COLLECTION, {
+				id: count + 1,
+				text: text,
+				author: author,
+				issue_id: issue_id,
+			});
+			return result.result;
+		} catch (ex) {
+			console.log(" -------------------COMMENTS ADD ERROR");
+			return { error: ex };
+		}
 	};
 
 	return {

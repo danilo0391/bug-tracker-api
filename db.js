@@ -7,9 +7,17 @@ module.exports = () => {
 	const count = (collectionName, query = {}) => {
 		return new Promise((resolve, reject) => {
 			MongoClient.connect(uri, MONGO_OPTIONS, (err, client) => {
+				if (err) {
+					console.log(err);
+					return reject("=== count::MongoClient.connect");
+				}
 				const db = client.db(DB_NAME);
 				const collection = db.collection(collectionName);
 				collection.find(query).count((err, docs) => {
+					if (err) {
+						console.log(err);
+						return reject("=== find::MongoClient.connect");
+					}
 					resolve(docs);
 					client.close();
 				});
@@ -20,9 +28,17 @@ module.exports = () => {
 	const get = (collectionName, query = {}) => {
 		return new Promise((resolve, reject) => {
 			MongoClient.connect(uri, MONGO_OPTIONS, (err, client) => {
+				if (err) {
+					console.log(err);
+					return reject("=== get::MongoClient.connect");
+				}
 				const db = client.db(DB_NAME);
 				const collection = db.collection(collectionName);
 				collection.find(query).toArray((err, docs) => {
+					if (err) {
+						console.log(err);
+						return reject("=== find::MongoClient.connect");
+					}
 					resolve(docs);
 					client.close();
 				});
@@ -33,9 +49,17 @@ module.exports = () => {
 	const add = (collectionName, item) => {
 		return new Promise((resolve, reject) => {
 			MongoClient.connect(uri, MONGO_OPTIONS, (err, client) => {
+				if (err) {
+					console.log(err);
+					return reject("=== add::MongoClient.connect");
+				}
 				const db = client.db(DB_NAME);
 				const collection = db.collection(collectionName);
 				collection.insertOne(item, (err, result) => {
+					if (err) {
+						console.log(err);
+						return reject("=== insertOne::MongoClient.connect");
+					}
 					resolve(result);
 				});
 			});
@@ -45,12 +69,16 @@ module.exports = () => {
 	const aggregate = (collectionName, pipeline = []) => {
 		return new Promise((resolve, reject) => {
 			MongoClient.connect(uri, MONGO_OPTIONS, (err, client) => {
+				if (err) {
+					console.log(err);
+					return reject("=== aggregate::MongoClient.connect");
+				}
 				const db = client.db(DB_NAME);
 				const collection = db.collection(collectionName);
 				collection.aggregate(pipeline).toArray((err, docs) => {
 					if (err) {
-						console.log(" --- aggregate ERROR ---");
 						console.log(err);
+						return reject(" --- aggregate ERROR ---");
 					}
 					resolve(docs);
 					client.close();

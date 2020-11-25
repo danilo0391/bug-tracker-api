@@ -7,35 +7,57 @@ module.exports = () => {
 			console.log(" 01: Missing key");
 			return null;
 		}
-		const users = await db.get(COLLECTION, { key });
-		if (users.length !== 1) {
-			console.log(" 02: Bad key");
+		try {
+			const users = await db.get(COLLECTION, { key });
+			if (users.length !== 1) {
+				console.log(" 02: Bad key");
+				return null;
+			}
+			return users[0];
+		} catch (ex) {
+			console.log("=== Exception users::getByKey ===");
+			console.log(ex);
 			return null;
 		}
-		return users[0];
 	};
 
 	const get = async (email = null) => {
 		console.log(" inside users model");
 		if (!email) {
-			const users = await db.get(COLLECTION);
-			return users;
+			try {
+				const users = await db.get(COLLECTION);
+				return { usersList: users };
+			} catch (ex) {
+				console.log(" -------------------USERS GET ERROR");
+				return { error: ex };
+			}
 		}
-		const users = await db.get(COLLECTION, { email });
-		return users;
+
+		try {
+			const users = await db.get(COLLECTION, { email });
+			return { userList: users };
+		} catch (error) {
+			console.log(" -------------------USERS GET ERROR");
+			return { error: ex };
+		}
 	};
 
 	const add = async (name, email, userType, key) => {
 		//const usersCount = await db.count(COLLECTION);
-		const results = await db.add(COLLECTION, {
-			//id: usersCount + 1,
-			name: name,
-			email: email,
-			userType: userType,
-			key: key,
-		});
+		try {
+			const results = await db.add(COLLECTION, {
+				//id: usersCount + 1,
+				name: name,
+				email: email,
+				userType: userType,
+				key: key,
+			});
 
-		return results.result;
+			return results.result;
+		} catch (error) {
+			console.log(" -------------------USERS ADD ERROR");
+			return { error: ex };
+		}
 	};
 
 	return {

@@ -3,14 +3,23 @@ const COLLECTION = "issues";
 
 module.exports = () => {
 	const get = async (issueNumber = null) => {
-		console.log(issueNumber);
 		console.log(" inside issues model");
 		if (!issueNumber) {
-			const issues = await db.get(COLLECTION);
-			return issues;
+			try {
+				const issues = await db.get(COLLECTION);
+				return { issuesList: issues };
+			} catch (ex) {
+				console.log(" -------------------ISSUES GET ERROR");
+				return { error: ex };
+			}
 		}
-		const anIssue = await db.get(COLLECTION, { issueNumber });
-		return anIssue;
+		try {
+			const anIssue = await db.get(COLLECTION, { issueNumber });
+			return { issuesList: anIssue };
+		} catch (ex) {
+			console.log(" -------------------ANISSUES GET ERROR");
+			return { error: ex };
+		}
 	};
 
 	const add = async (slug, title, description) => {
@@ -22,14 +31,19 @@ module.exports = () => {
 		const count_var = await db.count(COLLECTION, { project_id });
 		const next = slug + "-" + (count_var + 1);
 
-		const results = await db.add(COLLECTION, {
-			issueNumber: next,
-			title: title,
-			description: description,
-			status: status,
-			project_id: project_id,
-		});
-		return results.results;
+		try {
+			const results = await db.add(COLLECTION, {
+				issueNumber: next,
+				title: title,
+				description: description,
+				status: status,
+				project_id: project_id,
+			});
+			return results.results;
+		} catch (ex) {
+			console.log(" -------------------ISSUES ADD ERROR");
+			return { error: ex };
+		}
 	};
 
 	const aggregateWithComments = async (issueNumber) => {
@@ -49,9 +63,15 @@ module.exports = () => {
 			},
 		];
 		console.log(LOOKUP_COMMENTS_PIPELINE);
-		const issues = await db.aggregate(COLLECTION, LOOKUP_COMMENTS_PIPELINE);
-		console.log(issues);
-		return issues;
+
+		try {
+			const issues = await db.aggregate(COLLECTION, LOOKUP_COMMENTS_PIPELINE);
+			console.log(issues);
+			return { issuesList: issues };
+		} catch (ex) {
+			console.log(" -------------------ISSUES AggregateWithComments ERROR");
+			return { error: ex };
+		}
 	};
 
 	const aggregateWithCommentsById = async (issueNumber) => {
@@ -71,14 +91,20 @@ module.exports = () => {
 			},
 		];
 		console.log(LOOKUP_COMMENTS_PIPELINE);
-		const issues = await db.aggregate(COLLECTION, LOOKUP_COMMENTS_PIPELINE);
-		console.log(issues);
-		return issues;
+		try {
+			const issues = await db.aggregate(COLLECTION, LOOKUP_COMMENTS_PIPELINE);
+			console.log(issues);
+			return { issuesList: issues };
+		} catch (ex) {
+			console.log(" -------------------ISSUES AggregateWithCommentsById ERROR");
+			return { error: ex };
+		}
 	};
 
 	return {
 		get,
 		add,
 		aggregateWithComments,
+		aggregateWithCommentsById,
 	};
 };
