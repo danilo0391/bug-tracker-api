@@ -38,11 +38,6 @@ In order to use this API, you will need to run:
 
 - `$env:MONGO_URI="mongodb+srv://user:password@cluster0.2rje0.mongodb.net/?retryWrites=true&w=majority"`
 
-## Code Examples
-
-Show examples of usage:
-`put-your-code-here`
-
 ## Features
 
 List of features ready and TODOs for future development
