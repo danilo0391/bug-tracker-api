@@ -34,9 +34,13 @@ In order to use this API, you will need to run:
 
 - `npm install`
 
-  Also you will need to set your DataBase (See example below)
+Also you will need to set your DataBase (See example below)
 
 - `$env:MONGO_URI="mongodb+srv://user:password@cluster0.2rje0.mongodb.net/?retryWrites=true&w=majority"`
+
+Finally run:
+
+- `npm run start:dev`
 
 ## Features
 
