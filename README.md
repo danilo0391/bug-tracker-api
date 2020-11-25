@@ -19,8 +19,8 @@ This API has been developed to GET, POST, and AGGREGATE data from a Mongo Databa
 
 ## Screenshots
 
-![Get all issues](./images/issues.jpg)
-![Get Comments by Author](./images/commentsByAuthor.jpg)
+![Get all issues](./img/image1)
+![Get Comments by Author](./img/image2)
 
 ## Technologies
 
